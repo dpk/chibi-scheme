@@ -892,7 +892,7 @@
              (cond
               ((ellipsis-mark? p)
                (error "bad ellipsis" p))
-              ((member p lits compare)
+              ((memq p lits)
                (list _and
                      (list _compare v (list _rename (list _quote p)))
                      (k vars)))
