@@ -2298,6 +2298,7 @@ sexp sexp_make_env_op (sexp ctx, sexp self, sexp_sint_t n) {
 #if SEXP_USE_STABLE_ABI || SEXP_USE_RENAME_BINDINGS
   sexp_env_renames(e) = SEXP_NULL;
 #endif
+  sexp_env_props(e) = SEXP_NULL;
   return e;
 }
 
@@ -2621,6 +2622,7 @@ sexp sexp_env_import_op (sexp ctx, sexp self, sexp_sint_t n, sexp to, sexp from,
   sexp_env_renames(value) = sexp_env_renames(to);
   sexp_env_renames(to) = SEXP_NULL;
 #endif
+  sexp_env_props(to) = sexp_append2(ctx, sexp_env_props(from), sexp_env_props(from));
   sexp_immutablep(value) = sexp_immutablep(to);
   sexp_immutablep(to) = sexp_truep(immutp);
   /* import the bindings, one at a time or in bulk */

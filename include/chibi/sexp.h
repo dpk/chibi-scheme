@@ -525,7 +525,7 @@ struct sexp_struct {
     } cpointer;
     /* runtime types */
     struct {
-      sexp parent, lambda, bindings;
+      sexp parent, lambda, bindings, props;
 #if SEXP_USE_STABLE_ABI || SEXP_USE_RENAME_BINDINGS
       sexp renames;
 #endif
@@ -1289,6 +1289,7 @@ enum sexp_uniform_vector_type {
 #define sexp_env_local_p(x)       (sexp_env_parent(x))
 #define sexp_env_global_p(x)      (! sexp_env_local_p(x))
 #define sexp_env_lambda(x)        (sexp_field(x, env, SEXP_ENV, lambda))
+#define sexp_env_props(x)         (sexp_field(x, env, SEXP_ENV, props))
 
 #define sexp_macro_proc(x)        (sexp_field(x, macro, SEXP_MACRO, proc))
 #define sexp_macro_env(x)         (sexp_field(x, macro, SEXP_MACRO, env))
