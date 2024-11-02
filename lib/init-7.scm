@@ -1160,6 +1160,31 @@
 (define (raise-continuable exn)
   (raise (make-exception 'continuable "" exn #f #f)))
 
+;; Support continuing certain exception types at the top level, but
+;; still allow their subtypes to define themselves as serious and
+;; require exiting
+(define non-serious-exception-predicates '())
+(define serious-exception-predicates '())
+
+(define (register-non-serious-exception-predicate! pred)
+  (set! non-serious-exception-predicates (cons pred non-serious-exception-predicates)))
+(define (register-serious-exception-predicate! pred)
+  (set! serious-exception-predicates (cons pred serious-exception-predicates)))
+
+(define (default-exception-handler exc)
+  (%with-exception-handler
+   #f
+   (lambda ()
+     (if (find (lambda (f) (f exc)) non-serious-exception-predicates)
+         (if (find (lambda (f) (f exc)) serious-exception-predicates)
+             (raise exc)
+             (begin
+               (display "NON-SERIOUS EXCEPTION: " (current-error-port))
+               (write exc (current-error-port))
+               (display "\n" (current-error-port))))
+         (raise exc)))))
+(current-exception-handler default-exception-handler)
+
 (cond-expand
  (threads
   (define (%with-exception-handler handler thunk)
